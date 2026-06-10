@@ -77,30 +77,6 @@ export const mockProjects: Project[] = [
       "Improved my ability to rapidly build and launch viable MVPs under tight deadlines.",
     ],
   },
-  {
-    id: 2,
-    title: "Crypto Dashboard",
-    category: "Work",
-    slug: "crypto-dashboard",
-    videoWebm: "/img/crypto-preview.webm",
-    videoMp4: "/img/crypto-preview.mp4",
-  },
-  {
-    id: 3,
-    title: "SushkovPro",
-    category: "Work",
-    slug: "sushkovpro",
-    videoWebm: "/img/sushkov.webm",
-    videoMp4: "/img/sushkov.mp4",
-  },
-  {
-    id: 4,
-    title: "Health Tracker",
-    slug: "health-tracker",
-    category: "Pet Project",
-    videoWebm: "/img/health.webm",
-    videoMp4: "/img/health.mp4",
-  },
 ];
 
 export function getProjectBySlug(slug: string): Project | undefined {
