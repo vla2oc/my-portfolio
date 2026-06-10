@@ -16,14 +16,14 @@ const bulletSprings = {
   stiffness: 120,
   damping: 12,
   mass: 0.5,
-};
+} as const;
 
 const contentSprings = {
   type: "spring",
   stiffness: 180,
   damping: 21,
   mass: 0.5,
-};
+} as const;
 
 // Анимация для текстового блока (смещаем вверх, а не скейлим, чтобы не двигать соседей)
 const contentVariants = {
