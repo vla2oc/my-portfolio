@@ -12,7 +12,7 @@ export default function WorkPage() {
     <>
       <WrapperPage className="gap-8">
         <BreadcrumbNav />
-        <WorkSectionWrapper title="Exprience">
+        <WorkSectionWrapper title="Experience">
           <div className="w-full">
             {/* Сетка Grid для 3 видео-карточек */}
             <div className="grid w-full grid-cols-1 md:grid-cols-2 gap-6 group">

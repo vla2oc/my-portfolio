@@ -11,11 +11,11 @@ export default function Home() {
             Vladyslav Kurochka
           </h1>
           <p className="text-main text-text-tertiary leading-relaxed">
-            I help businesses solve real-world challenges through thoughtful
-            product development. By combining technical expertise, design
-            thinking, and business understanding, I create solutions that are
-            both effective for users and valuable for companies. My work focuses
-            on turning complex problems into clear, practical products.
+            Frontend Engineer based in Katowice, Poland. I build fast,
+            interactive web products using React & TypeScript from B2B platforms
+            to hackathon MVPs. I care about performance, clean UX, and shipping
+            things that actually work. Currently open to full-time roles and
+            freelend projects.
           </p>
           <p className="text-main text-text-tertiary">
             Technology is the tool the goal is always delivering meaningful
