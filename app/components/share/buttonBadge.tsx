@@ -4,9 +4,14 @@ import React, { useEffect, useRef } from "react";
 import { SpringState, RippleState } from "./type";
 
 export default function ButtonBadge() {
+  const email = "kurochka265@gmail.com";
+  const subject = "Open to work — let's talk";
+  const body = `Hi Vladyslav,\n\nI saw your portfolio and would love to connect about a project / role.\n\n— `;
+
+  const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   // Ссылки на DOM-элементы для прямого управления стилями (минуя VDOM)
   const badgeRef = useRef<HTMLSpanElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const buttonRef = useRef<HTMLAnchorElement>(null);
   const ripple1Ref = useRef<HTMLSpanElement>(null);
   const ripple2Ref = useRef<HTMLSpanElement>(null);
 
@@ -125,7 +130,7 @@ export default function ButtonBadge() {
   }, []);
 
   return (
-    <div className="relative inline-block m-8">
+    <div className="relative inline-block md:m-8">
       {/* Контейнер бейджа (позиционирован абсолютно над кнопкой) */}
       <div className="absolute -top-1.5 -right-1.5 z-20 flex items-center justify-center w-4 h-4">
         {/* Волна 1 */}
@@ -146,12 +151,13 @@ export default function ButtonBadge() {
       </div>
 
       {/* Кнопка Open to Work */}
-      <button
-        ref={buttonRef}
+      <a
+        ref={buttonRef as React.RefObject<HTMLAnchorElement>}
+        href={mailtoUrl}
         className="px-2 py-1.5 bg-background-secondary  text-white text-sm tracking-wide lowercase rounded-xl border border-neutral-500 hover:border-green-500/50 hover:text-white  duration-300"
       >
         open to work
-      </button>
+      </a>
     </div>
   );
 }

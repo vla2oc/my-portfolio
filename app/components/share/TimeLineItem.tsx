@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion"; // или "framer-motion"
+import { motion } from "framer-motion";
 
 interface TimelineItemProps {
   phaseNumber: string;
@@ -20,15 +20,15 @@ const bulletSprings = {
 
 const contentSprings = {
   type: "spring",
-  stiffness: 180,
-  damping: 21,
+  stiffness: 120,
+  damping: 10,
   mass: 0.5,
 } as const;
 
 // Анимация для текстового блока (смещаем вверх, а не скейлим, чтобы не двигать соседей)
 const contentVariants = {
-  rest: { opacity: 0.75, y: 0 },
-  hover: { opacity: 1, y: -3 },
+  rest: { opacity: 0.75, scale: 1 },
+  hover: { opacity: 1, scale: 1.01 },
 };
 
 const bulletVariants = {

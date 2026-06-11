@@ -1,35 +1,73 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname();
+
   useEffect(() => {
-    // Проверка prefers-reduced-motion — уважаем системные настройки
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    if (prefersReduced) return;
-
-    const lenis = new Lenis({
-      duration: 1.2, // ← главный параметр: 0.8 заметно, 1.2 еле слышно
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo ease-out
-      smoothWheel: true,
-      touchMultiplier: 1, // на тач-девайсах не форсируем — нативный скролл лучше
-    });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
     }
 
-    const rafId = requestAnimationFrame(raf);
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let lenis: Lenis | null = null;
+
+    const setupLenis = () => {
+      if (lenis || mediaQuery.matches) return;
+      lenis = new Lenis({
+        lerp: 0.08,
+        wheelMultiplier: 0.85,
+        touchMultiplier: 1.5,
+        smoothWheel: true,
+        syncTouch: false,
+        autoRaf: true,
+      });
+      lenisRef.current = lenis;
+    };
+
+    const destroyLenis = () => {
+      lenis?.destroy();
+      lenis = null;
+      lenisRef.current = null;
+    };
+
+    setupLenis();
+
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      if (e.matches) destroyLenis();
+      else setupLenis();
+    };
+
+    mediaQuery.addEventListener("change", handleMotionChange);
 
     return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
+      mediaQuery.removeEventListener("change", handleMotionChange);
+      destroyLenis();
     };
   }, []);
+
+  useEffect(() => {
+    const lenis = lenisRef.current;
+    if (!lenis) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      return;
+    }
+
+    const id1 = requestAnimationFrame(() => {
+      const id2 = requestAnimationFrame(() => {
+        lenis.resize();
+        lenis.stop();
+        lenis.scrollTo(0, { immediate: true, force: true });
+        lenis.start();
+      });
+      return () => cancelAnimationFrame(id2);
+    });
+
+    return () => cancelAnimationFrame(id1);
+  }, [pathname]);
 
   return <>{children}</>;
 }

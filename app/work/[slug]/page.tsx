@@ -34,6 +34,7 @@ export default async function ProjectPage({
             <FullVideo
               videoMp4={project.videoMp4}
               videoWebm={project.videoWebm}
+              liveUrl={project.liveUrl}
             />
           </div>
         </header>

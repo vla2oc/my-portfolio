@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/breadcrumb";
 
 interface BreadcrumbNavProps {
-  // Переопределяем последний сегмент — slug "the-garden" → реальный title проекта
   pageTitle?: string;
 }
 
@@ -44,7 +43,6 @@ export function BreadcrumbNav({ pageTitle }: BreadcrumbNavProps) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {/* Home — всегда первый */}
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link href="/">Home</Link>
@@ -56,7 +54,6 @@ export function BreadcrumbNav({ pageTitle }: BreadcrumbNavProps) {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               {isLast ? (
-                // Текущая страница — не ссылка
                 <BreadcrumbPage>{label}</BreadcrumbPage>
               ) : (
                 <BreadcrumbLink asChild>

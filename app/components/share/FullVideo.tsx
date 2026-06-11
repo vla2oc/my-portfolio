@@ -5,12 +5,18 @@ import { motion } from "framer-motion";
 interface FullVideoProps {
   videoWebm: string;
   videoMp4: string;
+  liveUrl: string;
 }
 
-export default function FullVideo({ videoMp4, videoWebm }: FullVideoProps) {
+export default function FullVideo({
+  videoMp4,
+  videoWebm,
+  liveUrl,
+}: FullVideoProps) {
   return (
     <>
-      <motion.div
+      <motion.a
+        href={liveUrl}
         className="relative w-full aspect-video overflow-hidden rounded-xl"
         whileHover={{
           scale: 1.02,
@@ -31,7 +37,7 @@ export default function FullVideo({ videoMp4, videoWebm }: FullVideoProps) {
           <source src={videoMp4} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-      </motion.div>
+      </motion.a>
     </>
   );
 }

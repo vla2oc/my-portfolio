@@ -1,4 +1,3 @@
-import ProjectSection from "../components/section/ProjectSection";
 import WorkSectionWrapper from "../components/section/work/WorkSectionWrapper";
 import { BreadcrumbNav } from "../components/share/BreadcrumbNav";
 import PreviewCard from "../components/share/PreviewCard";
