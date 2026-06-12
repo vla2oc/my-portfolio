@@ -31,6 +31,10 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${robotoMono.variable} h-full antialiased`}
     >
+      <meta
+        name="google-site-verification"
+        content="avNQtDDmmyXulsxR1kXGLXBrtMnpkfwA0TWrzxvdVBM"
+      />
       <body className="min-h-full flex flex-col">
         <SmoothScroll>
           <HeaderSection />
