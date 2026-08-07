@@ -2,9 +2,8 @@ export interface Project {
   id: number;
   title: string;
   category: "Work" | "Pet Project" | "Hackatom";
-  videoWebm: string;
   videoMp4: string;
-  posterUrl?: string;
+  posterUrl: string;
   slug: string;
   shortDescription: string;
   githubUrl: string;
@@ -30,8 +29,8 @@ export const mockProjects: Project[] = [
     title: "The Garden",
     category: "Work",
     slug: "the-garden",
-    videoWebm: "/img/TheGarden.webm",
     videoMp4: "/img/TheGarden.mp4",
+    posterUrl: "/img/the-garden-prev.jpg",
     shortDescription:
       "A high-performance premium promotional website for a luxury lounge, focused on delivering a cinematic user experience and smooth 60fps animations.",
     githubUrl: "https://github.com/vla2oc/The-Garden",
@@ -83,8 +82,8 @@ export const mockProjects: Project[] = [
       "Crypto AI-Tracker: Microservices Dashboard with Hybrid Sentiment Analysis",
     category: "Work",
     slug: "crypto-dashboard",
-    videoWebm: "/img/crypto-preview.webm",
     videoMp4: "/img/crypto-preview.mp4",
+    posterUrl: "/img/crypto-portfolio-prev.jpg",
     githubUrl: "https://github.com/vla2oc/cryptoPortfolio",
     liveUrl: "https://vla2oc.github.io/cryptoPortfolio/",
     shortDescription:
@@ -144,8 +143,8 @@ export const mockProjects: Project[] = [
     title: "SushkovPro: B2B Corporate Identity & Digital Transformation",
     category: "Work",
     slug: "sushkovpro",
-    videoWebm: "/img/sushkov.webm",
     videoMp4: "/img/sushkov.mp4",
+    posterUrl: "/img/sushkov-prev.jpg",
     shortDescription:
       "A complete digital transformation for a traditional construction firm. More than just a corporate site, its a high-performance B2B platform designed to establish industry authority, showcase architectural capabilities through 3D elements, and drive high-quality lead generation.",
 
@@ -208,8 +207,8 @@ export const mockProjects: Project[] = [
     title: "Health DApp: Web3 Fitness Dashboard & Analytics",
     slug: "health-tracker",
     category: "Pet Project",
-    videoWebm: "/img/health.webm",
     videoMp4: "/img/health.mp4",
+    posterUrl: "/img/dapp-health-prev.jpg",
     shortDescription:
       "Personal health data shouldn't be locked in corporate silos. This DApp bridges modern fitness tracking with Web3. It provides a premium, responsive dashboard for tracking daily metrics (steps, water, vitals) while being architecturally ready for on-chain data anchoring.",
 

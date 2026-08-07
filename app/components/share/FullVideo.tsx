@@ -1,18 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useInViewVideo } from "./useInViewVideo";
 
 interface FullVideoProps {
-  videoWebm: string;
   videoMp4: string;
+  posterUrl: string;
   liveUrl: string;
 }
 
 export default function FullVideo({
   videoMp4,
-  videoWebm,
+  posterUrl,
   liveUrl,
 }: FullVideoProps) {
+  const videoRef = useInViewVideo();
+
   return (
     <>
       <motion.a
@@ -26,14 +29,14 @@ export default function FullVideo({
         transition={{ type: "spring", stiffness: 160, damping: 12, mass: 0.5 }}
       >
         <video
-          autoPlay
+          ref={videoRef}
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
+          poster={posterUrl}
           className="absolute rounded-xl border border-neutral-300 inset-0 w-full h-full object-cover transition-all duration-300 ease-premium group-hover:scale-105"
         >
-          <source src={videoWebm} type="video/webm" />
           <source src={videoMp4} type="video/mp4" />
           Your browser does not support the video tag.
         </video>

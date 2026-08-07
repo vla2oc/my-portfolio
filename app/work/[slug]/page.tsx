@@ -33,7 +33,7 @@ export default async function ProjectPage({
           <div className="grid w-full grid-cols-1 md:grid-cols-1">
             <FullVideo
               videoMp4={project.videoMp4}
-              videoWebm={project.videoWebm}
+              posterUrl={project.posterUrl}
               liveUrl={project.liveUrl}
             />
           </div>

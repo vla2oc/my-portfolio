@@ -1,16 +1,17 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import type { Project } from "../../data/project";
 import Link from "next/link";
+import { useInViewVideo } from "./useInViewVideo";
 
 interface PreviewCardProps {
   project: Project;
 }
 const MotionLink = motion(Link);
 export default function PreviewCard({ project }: PreviewCardProps) {
-  const { posterUrl, videoWebm, videoMp4, slug } = project;
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const { posterUrl, videoMp4 } = project;
+  const videoRef = useInViewVideo();
 
   return (
     <MotionLink
@@ -27,15 +28,13 @@ export default function PreviewCard({ project }: PreviewCardProps) {
       <div className="relative w-full aspect-video overflow-hidden">
         <video
           ref={videoRef}
-          autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster={posterUrl}
           className="absolute rounded-xl border border-neutral-300 inset-0 w-full h-full object-cover transition-all duration-300 ease-premium group-hover:scale-105"
         >
-          <source src={videoWebm} type="video/webm" />
           <source src={videoMp4} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
