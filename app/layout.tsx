@@ -4,6 +4,8 @@ import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "./components/providers/SmoothScroll";
 import HeaderSection from "./components/section/HeaderSection";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -40,6 +42,8 @@ export default function RootLayout({
           <HeaderSection />
           {children}
         </SmoothScroll>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
