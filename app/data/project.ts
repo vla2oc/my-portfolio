@@ -266,6 +266,90 @@ export const mockProjects: Project[] = [
       "Advanced my skills in data visualization, specifically synchronizing complex Recharts animations with global state changes.",
     ],
   },
+  {
+    id: 5,
+    title:
+      "ConvoyMind: Trip Planner for Truck Drivers (AETR Rest Stops & Parking)",
+    category: "Work",
+    slug: "convoymind",
+    videoMp4: "/img/convoymind.mp4",
+    posterUrl: "/img/convoymind.png",
+    shortDescription:
+      "A mobile app that plans a truck driver's trip around the law, not just the road. The driver enters a route, and ConvoyMind calculates where mandatory AETR/EU rest stops fall, checks whether parking is likely to be available there, and flags scheduling conflicts before the truck leaves the yard. Built as an MVP by a 4-person startup team and pitched on stage at MobiScale Demo Day.",
+
+    githubUrl: "-",
+    liveUrl: "https://convojmind-landing.vercel.app/",
+
+    stack: [
+      {
+        name: "Expo (managed) + React Native + TypeScript",
+        reason:
+          "The user is a driver holding a phone, so the product had to be native mobile. Managed Expo let me carry my React experience over and ship a working prototype without maintaining native build tooling.",
+      },
+      {
+        name: "Expo Router",
+        reason:
+          "File-based routing keeps navigation predictable and close to the web mental model, which kept the React Native specific surface area small for an MVP.",
+      },
+      {
+        name: "TomTom Orbis Routing v2",
+        reason:
+          "Chosen because it models rest stops natively inside route legs and returns routing plus live traffic in a single call, so the rest-stop plan and the ETA come from the same source of truth.",
+      },
+      {
+        name: "AETR rules engine in pure TypeScript",
+        reason:
+          "Driving-time and rest regulations are implemented as plain, typed, framework-free functions. The rules are legally fixed, so hardcoding them makes the logic fully testable and independent of the UI.",
+      },
+      {
+        name: "Jest (jest-expo) + MSW v2",
+        reason:
+          "No free real-time truck parking API exists for Europe, so parking is served by a mock API. MSW runs the same handlers in tests (msw/node) and in the dev app (msw/native), so the app is built against a stable contract that a real data source can replace later.",
+      },
+    ],
+
+    features: [
+      "Automatic calculation of mandatory breaks and rest periods along a route according to AETR/EU driving-time rules.",
+      "Parking availability check at each planned stop, with the data source and confidence shown next to every figure.",
+      "Early conflict detection: the driver sees before departure where the legal schedule and the real route do not fit together.",
+      "Portrait-mode timeline ('tape') as the main result screen: the trip is shown as a sequence in time instead of a map, because that is what a driver can actually read on a phone.",
+    ],
+
+    metrics: [
+      "Taken from architecture documents to a working prototype that the team demos to carriers.",
+      "Pitched on stage at MobiScale Demo Day (Edition 2) in September 2026 with a live prototype.",
+      "Problem confirmed in conversation with a carrier who had already built an internal tool for the same task.",
+    ],
+
+    challenges: [
+      {
+        challenge:
+          "No data where it matters most: there is no free, real-time API for truck parking occupancy in Europe, yet parking is half of the product's value.",
+        solution:
+          "Defined a parking API contract first and built the MVP against a mock that follows it. In parallel, mapped the real public sources (GDDKiA registry in Poland, Autobahn GmbH and SID Toll Collect in Germany) and designed the UI to label every number with its source and confidence, so forecasts are never presented as live data.",
+      },
+      {
+        challenge:
+          "Map or no map: every routing product defaults to a map, but a driver in a cab needs to know when to stop, not to study geography on a small portrait screen.",
+        solution:
+          "Made a time-based timeline the primary view and deliberately moved the map out of the MVP. This cut scope and produced a screen that answers the driver's real question at a glance.",
+      },
+      {
+        challenge:
+          "First React Native project, small team, limited time: easy to drown in scope and native complexity.",
+        solution:
+          "Worked documentation-first. Locked decisions in DECISIONS.md, parked everything non-essential in NOT_NOW.md (map view, geocoding, multi-day routing, extra truck dimensions), and split the build into two phases, core logic and app, connected only by an API contract.",
+      },
+    ],
+
+    learnings: [
+      "Moved from web React to React Native and learned which habits transfer and which do not.",
+      "Learned to design around a real usage context (one hand, portrait phone, truck cab) instead of copying the conventions of the product category.",
+      "Practiced separating domain logic from UI: the regulation engine is testable on its own and does not know the app exists.",
+      "Learned to say 'not now' in writing: an explicit list of deferred features protected the MVP better than any deadline.",
+      "Saw how a product is tested outside the code: carrier conversations, a stage pitch, and judges asking where the data comes from.",
+    ],
+  },
 ];
 
 export function getProjectBySlug(slug: string): Project | undefined {
