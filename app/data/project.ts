@@ -1,7 +1,7 @@
 export interface Project {
   id: number;
   title: string;
-  category: "Work" | "Pet Project" | "Hackatom";
+  category: "Work" | "Pet Project" | "Hackaton";
   videoMp4: string;
   posterUrl: string;
   slug: string;
@@ -348,6 +348,100 @@ export const mockProjects: Project[] = [
       "Practiced separating domain logic from UI: the regulation engine is testable on its own and does not know the app exists.",
       "Learned to say 'not now' in writing: an explicit list of deferred features protected the MVP better than any deadline.",
       "Saw how a product is tested outside the code: carrier conversations, a stage pitch, and judges asking where the data comes from.",
+    ],
+  },
+  {
+    id: 6,
+    title:
+      "Lease Search: Retrieval Experiment on 29 Commercial Lease Agreements (Dense vs BM25 vs Hybrid)",
+    category: "Pet Project",
+    slug: "lease-rag",
+    videoMp4: "/img/lease-rag.mp4",
+    posterUrl: "/img/lease-rag-prev.jpg",
+    shortDescription:
+      "A search engine over 29 commercial lease agreements that returns the original contract clauses instead of an LLM answer. I left generation out on purpose: it hides the layer that actually breaks. The same question can be run through dense, BM25 and hybrid retrieval over one index, and an eval script with gold paragraph IDs measures where each mode fails. The demo shows one of those failures on purpose: a question that none of the three modes can answer, and the reason why.",
+
+    githubUrl: "https://github.com/vla2oc/lease-rag",
+    liveUrl: "",
+
+    stack: [
+      {
+        name: "Next.js 16 (App Router) + React 19 + TypeScript",
+        reason:
+          "UI and the search API live in one repo. Search runs in a Node route handler because the index is read from disk, and typed chunk and result shapes keep the parser, the index and the UI in agreement.",
+      },
+      {
+        name: "Cheerio",
+        reason:
+          "Parses the SEC EDGAR lease HTML into paragraphs while keeping each <p id>. Those IDs become the ground truth for the eval and the paragraph range shown next to every result.",
+      },
+      {
+        name: "Vercel AI SDK + OpenAI text-embedding-3-small",
+        reason:
+          "embedMany indexes the corpus in batches, and embed handles the query at search time (about $0.0000004 per request). The model is symmetric, with no query/passage prefixes, so flat score distributions could not be blamed on a prefix mismatch. That ruled out one easy explanation for the results.",
+      },
+      {
+        name: "wink-bm25-text-search + wink-nlp-utils",
+        reason:
+          "The lexical channel runs fully locally with no network calls, with its own tokenization. It is the baseline the other modes are compared against, and it doubles as a post-deploy canary that checks the index without spending an API call.",
+      },
+      {
+        name: "Reciprocal Rank Fusion (k=60), written by hand",
+        reason:
+          "Fuses rankings from two channels whose scores are not comparable, without calibrating them. Writing it myself is how I noticed that RRF throws away score magnitude: hybrid scores of 0.032 / 0.016 are arithmetic, not relevance.",
+      },
+      {
+        name: "Eval script in plain TypeScript (hit@1, hit@5, MRR)",
+        reason:
+          'Ground truth comes from paragraph IDs in the source HTML (<p id="s1p91">), so every score is computed by code, not by me eyeballing results. That makes each change to chunking or retrieval measurable before and after.',
+      },
+      {
+        name: "Tailwind CSS + Framer Motion",
+        reason:
+          "A minimal, thread-style interface that keeps the focus on the returned text: document ID, paragraph range and raw score are shown next to every fragment.",
+      },
+    ],
+
+    features: [
+      "Three retrieval modes (dense, BM25, hybrid via RRF) over the same 1,299-chunk index, switchable per query, so one question can be compared side by side.",
+      "Results are the original contract fragments with document ID, paragraph range and raw score. There is no LLM paraphrase in between.",
+      "One command (npm run eval) reports hit@1, hit@5 and MRR for all three modes against gold paragraph IDs.",
+      "Hardened search API: input validation, a 20 requests/min per-IP rate limit, and BM25 that keeps working even without an API key.",
+    ],
+
+    metrics: [
+      "29 lease agreements from SEC EDGAR parsed into 1,299 chunks and indexed for three retrieval modes.",
+      "Baseline on 6 gold questions: BM25 hit@5 1.00 / MRR 0.68, hybrid 0.83 / 0.59, dense 0.50 / 0.38. The set is small, so I use it to compare changes, not as a benchmark.",
+      "7 failure modes found and written up in the README, each with the number that proves it. Example: a chunk queried with its own verbatim text ranked 2nd, with a top-5 score spread of 0.01.",
+    ],
+
+    challenges: [
+      {
+        challenge:
+          "Dense retrieval can't tell near-identical clauses apart. Every lease has the same default clause, so the embeddings collapse into roughly one point, and ranking is decided by noise.",
+        solution:
+          "Ran a controlled experiment: query the index with the exact text of the gold paragraph. It still ranked 2nd, with a spread of 0.01 across the top 5. That isolates the limit as architectural (a bi-encoder never sees the query), not a phrasing problem. So the fix is lexical signal, a cross-encoder or a narrower search space, not swapping the embedding model.",
+      },
+      {
+        challenge:
+          "Users ask by company name, but contracts say 'Tenant' and 'Landlord'. The name appears in 2 of 1,299 chunks, the header and the exhibits, so hybrid search scored the same 0.60 as BM25 alone.",
+        solution:
+          "Built a 5-question set that separates questions with a distinguishing term in the chunk from questions where the only distinguisher is the party name. The pattern was clean: the first kind passes, the second fails in every mode, because fusion can't help when both channels share the same blind spot. This is the question in the demo. The next experiment, with success criteria written down in advance, is contextual chunk headers that put the party name and section title into every chunk.",
+      },
+      {
+        challenge:
+          "The metric said 'hit' while the chunk couldn't answer the question. For 'monthly rent in month 20', BM25 put the right chunk first, but the rent table had lost its column headers.",
+        solution:
+          "Traced it with grep over the parsed index to a 40-character minimum-paragraph filter. It removes 43% of paragraphs, mostly page numbers and footers, but also the header 'Term $/SQ.FT Monthly Annually' (29 characters). I documented it, split the metrics into file@5 (right contract?) and chunk@1 (right paragraph?) so one score can't hide which layer fails, and specified the fix: filter by content instead of length, and glue table headers to their first row.",
+      },
+    ],
+
+    learnings: [
+      "Learned to evaluate retrieval separately from generation: an LLM answer on top would have hidden every failure listed here.",
+      "Learned that a good metric can lie. hit@5 = 1.0 says nothing if the parser removed the context the answer depends on.",
+      "Learned to design eval questions that can actually fail: questions drafted from a contract's summary page all land in one chunk and score near 100% while measuring nothing.",
+      "Practiced turning an observation into a controlled experiment, like the verbatim self-query, before deciding what to change.",
+      "Learned to write the hypothesis and the success criteria before running the next experiment, so the result can't be argued into a win afterwards.",
     ],
   },
 ];
