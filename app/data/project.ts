@@ -505,8 +505,8 @@ export const mockProjects: Project[] = [
     ],
 
     metrics: [
-      "Built at [FILL IN: hackathon name] in [FILL IN: hours/days] as part of a [FILL IN]-person team; my part: [FILL IN].",
-      "Live stage demo: a real receipt photographed, three phones joined by QR and split the bill in about 30 seconds. [FILL IN: result / place, if any]",
+      "Built at START in 8 hours as part of a 4-person team; my part: Develop the product with friendly UI.",
+      "Live stage demo: a real receipt photographed, three phones joined by QR and split the bill in about 30 seconds.",
       "Usability target: a first-time user answers 'you had a burger and a cola, how much do you owe?' in under 15 seconds without explanation.",
     ],
 
