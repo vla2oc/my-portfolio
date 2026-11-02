@@ -444,6 +444,101 @@ export const mockProjects: Project[] = [
       "Learned to write the hypothesis and the success criteria before running the next experiment, so the result can't be argued into a win afterwards.",
     ],
   },
+  {
+    id: 7,
+    title:
+      "SplitCheck: Split a Restaurant Bill From One Photo (No App, No Sign-up)",
+    category: "Hackaton",
+    slug: "splitcheck",
+    videoMp4: "/img/splitcheck.mp4",
+    posterUrl: "/img/splitcheck-prev.jpg",
+    shortDescription:
+      "One person pays for the whole table, then spends a week reminding everyone what they owe. SplitCheck does one thing: the host takes a photo of the receipt, Claude reads the line items, and friends open a link or scan a QR code in the browser, tap what they ate and see their share with the host's BLIK number. No app, no account, no settings. Built at a hackathon for groups in Poland, where restaurants often won't split the bill and everyone has BLIK.",
+
+    githubUrl: "https://github.com/vla2oc/splitcheck",
+    liveUrl: "https://splitcheck-snowy.vercel.app/",
+
+    stack: [
+      {
+        name: "Next.js 16 (App Router) + React 19 + TypeScript",
+        reason:
+          "UI and the server routes live in one repo on Vercel. The receipt-recognition call runs in a server route, so the Anthropic API key never reaches the browser.",
+      },
+      {
+        name: "Supabase (Postgres + Realtime)",
+        reason:
+          "Stores split sessions and syncs them between phones in real time. When one guest taps an item or the host fixes a price, every open screen recalculates. There are no user accounts: a session lives behind its link.",
+      },
+      {
+        name: "Claude via Anthropic SDK + Zod",
+        reason:
+          "Receipt photo in, strict JSON out. The model must follow a schema with quantities already expanded and prices in grosze, and Zod validates the response before it touches the UI. The photo is compressed on the phone before upload and is not stored.",
+      },
+      {
+        name: "Zustand",
+        reason:
+          "Holds local session state (items, who took what, the current guest) in one small store, so realtime updates from Supabase and local taps go through the same path.",
+      },
+      {
+        name: "Motion (Framer Motion) + Tailwind CSS v4",
+        reason:
+          "The receipt 'prints' out of a printer at the start and a personal receipt prints at the end. All interactions use springs and animate only transform and opacity. With reduced motion enabled, the finished receipt is shown right away.",
+      },
+      {
+        name: "nanoid + qrcode.react",
+        reason:
+          "Short unguessable session links and a QR code on the host's phone, so friends at the same table join with one scan.",
+      },
+      {
+        name: "Vitest",
+        reason:
+          "Tests for the splitting logic, where a rounding error means someone is asked for money they don't owe.",
+      },
+    ],
+
+    features: [
+      "Photo to shareable bill in two actions: snap the receipt, tap 'Udostępnij' to get a link and a QR code.",
+      "Three rules instead of settings: tap an item and it's yours; several people tap it and it splits evenly; nobody takes it and it stays on the host.",
+      "Live sync across phones: everyone sees who took each item (avatars with initials) and a 'Rozdzielono 160 / 214,50 zł' progress bar.",
+      "Personal receipt at the end: only the guest's items, their share of service, 'Do zapłaty dla Vlada: 47,50 zł' and the host's BLIK number.",
+      "The host can tick items for a friend without a phone through a row of avatars ('Zaznaczam za: Ja · Ania · Kuba'), without a separate mode.",
+    ],
+
+    metrics: [
+      "Built at [FILL IN: hackathon name] in [FILL IN: hours/days] as part of a [FILL IN]-person team; my part: [FILL IN].",
+      "Live stage demo: a real receipt photographed, three phones joined by QR and split the bill in about 30 seconds. [FILL IN: result / place, if any]",
+      "Usability target: a first-time user answers 'you had a burger and a cola, how much do you owe?' in under 15 seconds without explanation.",
+    ],
+
+    challenges: [
+      {
+        challenge:
+          "Money that doesn't add up. A shared pizza for three, proportional service and tips, and floating-point rounding can easily leave the shares a few grosze off the receipt total.",
+        solution:
+          "All amounts are integers in grosze from the model's output onwards. Shared items and service are split in whole grosze, and the leftover grosze are handed out one at a time, so the sum of all shares always equals the receipt total exactly.",
+      },
+      {
+        challenge:
+          "LLM output is not a data contract. Receipts come back with '3× Piwo' as one line, prices in different formats, or slightly wrong values, and quantity logic would add a second tapping rule to the UI.",
+        solution:
+          "Asked the model for a strict schema with quantities already expanded into separate lines and prices in grosze, then validated it with Zod. Instead of a 'host is checking the receipt' step, the list is visible immediately and the host can fix any price at any time, and everyone's totals recalculate.",
+      },
+      {
+        challenge:
+          "Every question on the way in loses a guest. A standard flow asks for sign-up, a name, a group and a payment number before anyone sees the bill.",
+        solution:
+          "Followed one rule: the system doesn't ask what it can answer itself. No accounts, the session lives in the link. The guest sees the receipt first and is asked for a name in a single field only on the first tap. The BLIK number is optional and remembered. Unclaimed items stay on the host by default, so there is no 'close the bill' step.",
+      },
+    ],
+
+    learnings: [
+      "Learned to treat LLM output as untrusted input: a schema plus validation turns a model into a component you can build a UI on.",
+      "Learned to handle money as integers and to make the 'shares add up to the total' rule something the code guarantees rather than hopes for.",
+      "Practiced cutting features as a design decision: no history, no groups, no profiles, and a written list of what was removed and why.",
+      "Got hands-on with realtime sync between several devices through Supabase, where every screen has to agree on the same numbers.",
+      "Learned to design a demo as part of the product: the print animation opens and closes the story in about 30 seconds on stage.",
+    ],
+  },
 ];
 
 export function getProjectBySlug(slug: string): Project | undefined {
